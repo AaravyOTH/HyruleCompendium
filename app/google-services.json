@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "630211131545",
+    "project_id": "hyrulecompendium",
+    "storage_bucket": "hyrulecompendium.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630211131545:android:f26c500e1a3f103854a008",
+        "android_client_info": {
+          "package_name": "com.example.hyrulecompendium"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630211131545-rk74mi8apjnh16cjv17aorjdpkfl9kuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3uwEF9baMGbNZdx19pY1Xtkd3QBS0YYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630211131545-rk74mi8apjnh16cjv17aorjdpkfl9kuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
