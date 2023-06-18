@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HyruleCompendium</string>
+    <string name="login_with_google">Login with Google</string>
 
 </resources>

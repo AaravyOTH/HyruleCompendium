@@ -1,7 +1,10 @@
 package com.example.hyrulecompendium;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +15,14 @@ import android.widget.TextView;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -26,37 +37,26 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    //TODO: Keyboard drop after user presses submit
+    //TODO: Change default value from Name text to a 'hint' or 'subtext'. Look into InputView class you are using to see the option to add this instead of setting the inputs value.
+    //TODO: Fix look of MainActivity page
+    //TODO: Add to Database button
+    //TODO: Add to inventory view button
+    JSONObject jsonObject;
+
         //    //WRITE TO DB
     //        // Write a message to the database
-    //        FirebaseDatabase database = FirebaseDatabase.getInstance();
-    //        String userId = "aaravyadav";
-    //        DatabaseReference myRef = database.getReference(userId);
     //
-    //        myRef.setValue("User Java Object");
-    //
-    //        // Read from the database
-    //        myRef.addValueEventListener(new ValueEventListener() {
-    //            @Override
-    //            public void onDataChange(DataSnapshot dataSnapshot) {
-    //                // This method is called once with the initial value and again
-    //                // whenever data at this location is updated.
-    //                String value = dataSnapshot.getValue(String.class);
-    //                Log.d(TAG, "Value is: " + value);
-    //            }
-    //
-    //            @Override
-    //            public void onCancelled(DatabaseError error) {
-    //                // Failed to read value
-    //                Log.w(TAG, "Failed to read value.", error.toException());
-    //            }
-    //        });
+    Button save;
+    Button viewCompendium;
     TextView NameText, DescriptionText, CatagoryText, DropsText, LocationText;
     String mode = "";
     Button search;
     String enemy;
     EditText userInput;
     ImageView imageView;
-
+    DatabaseReference databaseRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +66,17 @@ public class MainActivity extends AppCompatActivity {
         DescriptionText = findViewById(R.id.DescriptionText);
         CatagoryText = findViewById(R.id.CatagoryText);
         LocationText = findViewById(R.id.CommonLocationText);
-        search = findViewById(R.id.button);
+        search = findViewById(R.id.SearchButton);
         userInput = findViewById(R.id.editTextTextPersonName);
         imageView = findViewById(R.id.imageView);
+        save = findViewById(R.id.Save);
+        viewCompendium = findViewById(R.id.button2);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userID = user.getUid();
+        databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("searchedItems");
+
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 // textView.setText(result);
                                 Log.d("JSON", result);
-                                JSONObject jsonObject = new JSONObject(result);
+                                jsonObject = new JSONObject(result);
                                 JSONObject data = jsonObject.getJSONObject("data");
 
                                 String category = data.getString("category");
@@ -136,6 +144,29 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchedItemName = String.valueOf(userInput.getText());
+                String imageLink = null;
+                try {
+                    imageLink = jsonObject.getJSONObject("data").getString("image");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                Item item = new Item(searchedItemName, imageLink);
+                databaseRef.push().setValue(item);
+            }
+        });
+
+        viewCompendium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, InventoryActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     public class ApiCallTask extends AsyncTask<String, Void, String> {
         private ApiCallback callback;
@@ -184,12 +215,35 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             try {
                 callback.onApiCompleted(result);
+                //databaseRef.push().setValue(result); // Save the entire API response as the searched item
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public interface ApiCallback {
+        public interface ApiCallback {
         void onApiCompleted(String result) throws JSONException;
     }
+    public class Item {
+        private String name;
+        private String imageLink;
+
+        public Item() {
+            // Default constructor required for Firebase
+        }
+
+        public Item(String name, String imageLink) {
+            this.name = name;
+            this.imageLink = imageLink;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getImageLink() {
+            return imageLink;
+        }
+    }
+
 }

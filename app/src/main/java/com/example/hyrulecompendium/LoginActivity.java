@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,7 +35,10 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
     GoogleSignInClient googleSignInClient;
-    int RC_Sign_In = 40;
+    int RC_Sign_In = 123;
+
+     String userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,21 +48,29 @@ public class LoginActivity extends AppCompatActivity {
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                        .build();
+                .requestEmail()
+                .build();
 
-        googleSignInClient = GoogleSignIn.getClient(this,googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        SignIn();
+        (findViewById(R.id.LoginButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignIn();
+            }
+        });
     }
-    private void SignIn(){
+
+    private void SignIn() {
         Intent intent = googleSignInClient.getSignInIntent();
-        startActivityForResult(intent,RC_Sign_In);
+        intent.putExtra(userID, userID);
+        startActivityForResult(intent, RC_Sign_In);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_Sign_In){
+        if (requestCode == RC_Sign_In) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -68,23 +80,44 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
     private void firebaseAuth(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     FirebaseUser user = auth.getCurrentUser();
-                    Users users = new Users();
-                    users.setUserId(user.getUid());
-                    users.setName(user.getDisplayName());
-                    users.setProfile(user.getPhotoUrl().toString());
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    if (user != null) {
+                        userID = user.getUid();
+                    }
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(LoginActivity.this,"error", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
 }
+
+/*  DatabaseReference myRef = database.getReference(getIntent().getStringExtra("userID"));
+
+                myRef.setValue("User Java Object");
+
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // This method is called once with the initial value and again
+                        // whenever data at this location is updated.
+                        String value = dataSnapshot.getValue(String.class);
+                        Log.d(TAG, "Value is: " + value);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        Log.w(TAG, "Failed to read value.", error.toException());
+                    }
+                });*/
