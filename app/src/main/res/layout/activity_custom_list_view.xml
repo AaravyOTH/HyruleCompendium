@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/purple_700"
     tools:context=".CustomListView">
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        />
+        android:layout_height="100dp" />
+
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:textSize="30sp"
         android:gravity="center"
         android:text="default"
-        />
+        android:textColor="#38b6f1"
+        android:textSize="30sp" />
 
 </LinearLayout>

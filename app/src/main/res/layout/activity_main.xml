@@ -6,17 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@color/white"
+    android:background="@drawable/download"
     android:fontFamily="@font/zelda"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/NameText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="204dp"
         android:fontFamily="@font/zelda"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#38b6f1"
         android:textSize="48sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,11 +28,13 @@
         android:id="@+id/SearchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="144dp"
         android:fontFamily="@font/zelda"
         android:text="search"
 
+        android:textColor="#38b6f1"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,66 +46,78 @@
         android:layout_marginTop="84dp"
         android:ems="10"
         android:fontFamily="@font/zelda"
+        android:hint="Name  (enemy, weapon, or material)"
         android:inputType="textPersonName"
-        android:text="Name"
 
+        android:textColor="#38b6f1"
+        android:textColorHint="#38b6f1"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="272dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="260dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/dark_header" />
+        app:srcCompat="@drawable/symbol" />
 
     <TextView
         android:id="@+id/DescriptionText"
-        android:layout_width="381dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="448dp"
         android:fontFamily="@font/zelda"
 
-        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="#38b6f1"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/CatagoryText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="408dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="404dp"
         android:fontFamily="@font/zelda"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#38b6f1"
+        android:textSize="34sp"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/CommonLocationText"
-        android:layout_width="225dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="512dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="648dp"
         android:fontFamily="@font/zelda"
-        android:textSize="24sp"
+        android:gravity="center"
 
+        android:textColor="#38b6f1"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/CommonDropsText"
-        android:layout_width="212dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="588dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="696dp"
         android:fontFamily="@font/zelda"
-        android:textSize="20sp"
+        android:gravity="center"
 
+        android:textColor="#38b6f1"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,6 +141,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:text="Save"
+        android:textColor="#38b6f1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -134,7 +152,19 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="16dp"
         android:text="Compendium"
+        android:textColor="#38b6f1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="16dp"
+        android:text="Logout"
+        android:textColor="#38b6f1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Save" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

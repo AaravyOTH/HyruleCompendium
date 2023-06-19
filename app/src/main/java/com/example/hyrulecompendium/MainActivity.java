@@ -1,11 +1,10 @@
 package com.example.hyrulecompendium;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,14 +14,19 @@ import android.widget.TextView;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -50,33 +54,52 @@ public class MainActivity extends AppCompatActivity {
     //
     Button save;
     Button viewCompendium;
-    TextView NameText, DescriptionText, CatagoryText, DropsText, LocationText;
+
+    Button Logout;
+    TextView NameText, DescriptionText, CategoryText, DropsText, LocationText;
+
     String mode = "";
     Button search;
     String enemy;
     EditText userInput;
     ImageView imageView;
     DatabaseReference databaseRef;
+    GoogleSignInClient googleSignInClient;
+    GoogleApiClient googleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         NameText = findViewById(R.id.NameText);
         DropsText = findViewById(R.id.CommonDropsText);
         DescriptionText = findViewById(R.id.DescriptionText);
-        CatagoryText = findViewById(R.id.CatagoryText);
+        CategoryText = findViewById(R.id.CatagoryText);
         LocationText = findViewById(R.id.CommonLocationText);
         search = findViewById(R.id.SearchButton);
         userInput = findViewById(R.id.editTextTextPersonName);
         imageView = findViewById(R.id.imageView);
         save = findViewById(R.id.Save);
+        Logout = findViewById(R.id.logoutButton);
         viewCompendium = findViewById(R.id.button2);
+        googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .build();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userID = user.getUid();
         databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("searchedItems");
 
+        Logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                googleSignInClient.signOut();
 
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                                     DropsText.setText(drops.toString());
 
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    DropsText.setText("");
                                 }
 
 
@@ -130,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 NameText.setText(userInput.getText());
                                 LocationText.setText(commonLocations.toString());
-                                CatagoryText.setText(category);
+                                CategoryText.setText(category);
                                 DescriptionText.setText(description);
                             }
                         } catch (Exception e) {
@@ -151,7 +174,9 @@ public class MainActivity extends AppCompatActivity {
                 String imageLink = null;
                 try {
                     imageLink = jsonObject.getJSONObject("data").getString("image");
+                    Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
+                    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     throw new RuntimeException(e);
                 }
 
@@ -168,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public class ApiCallTask extends AsyncTask<String, Void, String> {
+    public static class ApiCallTask extends AsyncTask<String, Void, String> {
         private ApiCallback callback;
 
         public ApiCallTask(ApiCallback callback) {
